@@ -2,6 +2,7 @@ package org.coding.afternoon.focus
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -35,7 +36,8 @@ class FocusTimerViewModel : ViewModel() {
     fun start() {
         if (timerState == TimerState.Running || timerState == TimerState.Completed) return
         timerState = TimerState.Running
-        countdownJob = viewModelScope.launch {
+        countdownJob?.cancel()
+        countdownJob = viewModelScope.launch(Dispatchers.Main) {
             while (remainingSeconds > 0) {
                 delay(1_000)
                 remainingSeconds--
@@ -58,6 +60,7 @@ class FocusTimerViewModel : ViewModel() {
     }
 
     fun dismiss() {
+        countdownJob?.cancel()
         timerState = TimerState.Idle
     }
 }
