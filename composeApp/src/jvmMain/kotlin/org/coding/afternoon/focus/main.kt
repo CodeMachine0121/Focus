@@ -16,7 +16,7 @@ fun main() = application {
     Window(
         onCloseRequest = ::exitApplication,
         title = "Focus",
-        state = rememberWindowState(size = DpSize(390.dp, 780.dp)),
+        state = rememberWindowState(size = DpSize(500.dp, 780.dp)),
         resizable = false,
     ) {
         val scope = rememberCoroutineScope()
