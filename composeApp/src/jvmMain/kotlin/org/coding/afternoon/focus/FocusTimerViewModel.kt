@@ -19,9 +19,16 @@ class FocusTimerViewModel : ViewModel() {
         private set
     var timerState by mutableStateOf(TimerState.Idle)
         private set
+    var sessionLabel by mutableStateOf("")
+        private set
 
     private var countdownJob: Job? = null
     var onComplete: (() -> Unit)? = null
+
+    fun setSessionLabel(label: String) {
+        if (timerState != TimerState.Idle) return
+        sessionLabel = label.take(60)
+    }
 
     val progress: Float
         get() = if (totalSeconds == 0) 1f else remainingSeconds.toFloat() / totalSeconds.toFloat()
@@ -57,12 +64,14 @@ class FocusTimerViewModel : ViewModel() {
     fun reset() {
         countdownJob?.cancel()
         remainingSeconds = totalSeconds
+        sessionLabel = ""
         timerState = TimerState.Idle
     }
 
     fun dismiss() {
         countdownJob?.cancel()
         remainingSeconds = totalSeconds
+        sessionLabel = ""
         timerState = TimerState.Idle
     }
 }
