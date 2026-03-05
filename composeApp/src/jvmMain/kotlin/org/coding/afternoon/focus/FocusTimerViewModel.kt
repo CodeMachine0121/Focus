@@ -62,6 +62,7 @@ class FocusTimerViewModel : ViewModel() {
 
     fun dismiss() {
         countdownJob?.cancel()
+        remainingSeconds = totalSeconds
         timerState = TimerState.Idle
     }
 }
