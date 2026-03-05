@@ -1,28 +1,57 @@
-This is a Kotlin Multiplatform project targeting Desktop (JVM).
+# Focus
 
-* [/composeApp](./composeApp/src) is for code that will be shared across your Compose Multiplatform applications.
-  It contains several subfolders:
-    - [commonMain](./composeApp/src/commonMain/kotlin) is for code that’s common for all targets.
-    - Other folders are for Kotlin code that will be compiled for only the platform indicated in the folder name.
-      For example, if you want to use Apple’s CoreCrypto for the iOS part of your Kotlin app,
-      the [iosMain](./composeApp/src/iosMain/kotlin) folder would be the right place for such calls.
-      Similarly, if you want to edit the Desktop (JVM) specific part, the [jvmMain](./composeApp/src/jvmMain/kotlin)
-      folder is the appropriate location.
+A Pomodoro productivity timer for Desktop, built with Kotlin Multiplatform and Compose Multiplatform.
 
-### Build and Run Desktop (JVM) Application
+## Features
 
-To build and run the development version of the desktop app, use the run configuration from the run widget
-in your IDE’s toolbar or run it directly from the terminal:
+| Feature | Description |
+|---------|-------------|
+| ⏱ **Timer** | Pomodoro-style timer (default 25 min) with auto-cycling between focus and break phases. Supports custom durations, session labels, and pause/resume. |
+| 📋 **History** | Session log with date, start time, and duration, persisted locally. |
+| 🎯 **Goals** | Daily goal tracking (up to 10 goals/day) with title, estimated Pomodoros, and completion checkbox. |
+| 🎵 **Sounds** | Ambient sound engine with white noise, ocean waves, rain, forest, and café sounds. Adjustable volume, independent of the timer. |
+| 📊 **Dashboard** | Productivity analytics: current streak, total sessions, focused minutes, 7-day bar chart, 30-day heatmap, and personal records. |
+| 🧘 **Break Coach** | 60+ categorised break activities (stretches, walks, meditation, etc.) with today's completion tracking. |
+| 💼 **Workspace** | Auxiliary ambient workspace timer for general task tracking. |
 
-- on macOS/Linux
-  ```shell
-  ./gradlew :composeApp:run
-  ```
-- on Windows
-  ```shell
-  .\gradlew.bat :composeApp:run
-  ```
+## Getting Started
+
+### Run
+
+```shell
+# macOS / Linux
+./gradlew :composeApp:run
+
+# Windows
+.\gradlew.bat :composeApp:run
+```
+
+### Package
+
+```shell
+# macOS (DMG), Windows (MSI), or Linux (DEB) — detected automatically
+./gradlew :composeApp:createDistributable
+```
+
+## Architecture
+
+MVVM + Repository pattern with Compose Multiplatform UI.
+
+```
+UI (Compose screens)
+  └── ViewModels (FocusTimer, Dashboard, Goal, AmbientSound, BreakCoach, Workspace)
+        └── Repositories (Session, Goal, BreakCoach)
+              └── Persistence (Java Preferences API — no external database)
+```
+
+Navigation is a sidebar with 7 tabs (⏱ 📋 🎯 🎵 📊 🧘 💼). The app minimises to the system tray when the window is closed.
+
+## Tech Stack
+
+- **Kotlin** 2.3.0 · **Compose Multiplatform** 1.10.0 · **Material3** 1.10.0
+- **AndroidX Lifecycle ViewModel** 2.9.6 · **Kotlinx Coroutines** 1.10.2
+- **Target platform:** Desktop JVM (macOS · Windows · Linux)
 
 ---
 
-Learn more about [Kotlin Multiplatform](https://www.jetbrains.com/help/kotlin-multiplatform-dev/get-started.html)…
+Learn more about [Kotlin Multiplatform](https://www.jetbrains.com/help/kotlin-multiplatform-dev/get-started.html)
