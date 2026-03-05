@@ -22,6 +22,8 @@ class FocusTimerViewModel : ViewModel() {
 
     private var countdownJob: Job? = null
     var onComplete: (() -> Unit)? = null
+    /** Called with the duration in minutes when the user dismisses a completed session. */
+    var onSessionDismissed: ((Int) -> Unit)? = null
 
     val progress: Float
         get() = if (totalSeconds == 0) 1f else remainingSeconds.toFloat() / totalSeconds.toFloat()
@@ -61,8 +63,10 @@ class FocusTimerViewModel : ViewModel() {
     }
 
     fun dismiss() {
+        val completedDuration = totalSeconds / 60
         countdownJob?.cancel()
         remainingSeconds = totalSeconds
         timerState = TimerState.Idle
+        onSessionDismissed?.invoke(completedDuration)
     }
 }
