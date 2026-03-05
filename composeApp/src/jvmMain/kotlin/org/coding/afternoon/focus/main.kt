@@ -1,5 +1,6 @@
 package org.coding.afternoon.focus
 
+import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.window.Window
 import androidx.compose.ui.window.application
@@ -16,13 +17,15 @@ fun main() = application {
         val composeWindow = window
         val viewModel = viewModel { FocusTimerViewModel() }
 
-        viewModel.onComplete = {
-            scope.launch {
-                composeWindow.isAlwaysOnTop = true
-                composeWindow.toFront()
-                composeWindow.requestFocus()
-                delay(500)
-                composeWindow.isAlwaysOnTop = false
+        SideEffect {
+            viewModel.onComplete = {
+                scope.launch {
+                    composeWindow.isAlwaysOnTop = true
+                    composeWindow.toFront()
+                    composeWindow.requestFocus()
+                    delay(500)
+                    composeWindow.isAlwaysOnTop = false
+                }
             }
         }
 
