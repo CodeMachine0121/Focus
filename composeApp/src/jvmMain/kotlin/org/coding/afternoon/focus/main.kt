@@ -1,5 +1,6 @@
 package org.coding.afternoon.focus
 
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.window.Window
@@ -27,6 +28,16 @@ fun main() = application {
                     composeWindow.isAlwaysOnTop = false
                 }
             }
+        }
+
+        // System tray integration — gracefully skipped when not supported.
+        DisposableEffect(viewModel) {
+            val trayManager = SystemTrayManager(
+                viewModel = viewModel,
+                onQuit = ::exitApplication,
+            )
+            trayManager.install()
+            onDispose { trayManager.uninstall() }
         }
 
         App(viewModel)
