@@ -44,6 +44,7 @@ class FocusTimerViewModel : ViewModel() {
                 remainingSeconds--
             }
             timerState = TimerState.Completed
+            CompletionSound.play()
             onComplete?.invoke()
         }
     }
