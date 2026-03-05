@@ -25,11 +25,16 @@ fun FocusScreen(viewModel: FocusTimerViewModel) {
     val minutes = remaining / 60
     val seconds = remaining % 60
     val timeText = "%02d:%02d".format(minutes, seconds)
+    val label = viewModel.sessionLabel
 
     var customInput by remember { mutableStateOf("") }
+    var labelInput by remember { mutableStateOf("") }
 
     LaunchedEffect(state) {
-        if (state == TimerState.Idle) customInput = ""
+        if (state == TimerState.Idle) {
+            customInput = ""
+            labelInput = ""
+        }
     }
 
     Box(modifier = Modifier.fillMaxSize()) {
@@ -72,6 +77,16 @@ fun FocusScreen(viewModel: FocusTimerViewModel) {
             )
         }
 
+        if (label.isNotEmpty() && state != TimerState.Idle) {
+            Spacer(Modifier.height(12.dp))
+            Text(
+                text = label,
+                fontSize = 16.sp,
+                fontWeight = FontWeight.Medium,
+                color = MaterialTheme.colorScheme.primary,
+            )
+        }
+
         Spacer(Modifier.height(32.dp))
 
         Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
@@ -101,6 +116,21 @@ fun FocusScreen(viewModel: FocusTimerViewModel) {
             modifier = Modifier.width(160.dp),
         )
 
+        Spacer(Modifier.height(12.dp))
+
+        OutlinedTextField(
+            value = labelInput,
+            onValueChange = { value ->
+                val trimmed = value.take(60)
+                labelInput = trimmed
+                viewModel.setSessionLabel(trimmed)
+            },
+            label = { Text("What are you focusing on?") },
+            enabled = state == TimerState.Idle,
+            singleLine = true,
+            modifier = Modifier.width(280.dp),
+        )
+
         Spacer(Modifier.height(32.dp))
 
         Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
@@ -125,10 +155,15 @@ fun FocusScreen(viewModel: FocusTimerViewModel) {
     }
 
     if (state == TimerState.Completed) {
+        val completionMessage = if (label.isNotEmpty()) {
+            "You completed: $label"
+        } else {
+            "Your focus session is complete."
+        }
         AlertDialog(
             onDismissRequest = { viewModel.dismiss() },
             title = { Text("Time's up!") },
-            text = { Text("Your focus session is complete.") },
+            text = { Text(completionMessage) },
             confirmButton = {
                 TextButton(onClick = { viewModel.dismiss() }) { Text("OK") }
             }
