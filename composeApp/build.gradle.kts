@@ -38,7 +38,7 @@ compose.desktop {
 
         nativeDistributions {
             targetFormats(TargetFormat.Dmg, TargetFormat.Msi, TargetFormat.Deb)
-            packageName = "org.coding.afternoon.focus"
+            packageName = "Focus"
             packageVersion = "1.0.0"
         }
     }
