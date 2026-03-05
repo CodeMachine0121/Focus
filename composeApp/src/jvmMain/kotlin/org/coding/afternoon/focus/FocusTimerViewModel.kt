@@ -33,7 +33,7 @@ class FocusTimerViewModel : ViewModel() {
     }
 
     fun start() {
-        if (timerState == TimerState.Running) return
+        if (timerState == TimerState.Running || timerState == TimerState.Completed) return
         timerState = TimerState.Running
         countdownJob = viewModelScope.launch {
             while (remainingSeconds > 0) {
