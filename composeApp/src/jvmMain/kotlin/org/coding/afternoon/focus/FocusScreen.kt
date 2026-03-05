@@ -2,8 +2,6 @@ package org.coding.afternoon.focus
 
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -44,14 +42,14 @@ fun FocusScreen(viewModel: FocusTimerViewModel) {
 
     Box(modifier = Modifier.fillMaxSize()) {
     Column(
-        modifier = Modifier.fillMaxSize().verticalScroll(rememberScrollState()).padding(32.dp),
+        modifier = Modifier.fillMaxSize().padding(horizontal = 32.dp, vertical = 24.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center,
     ) {
         Box(contentAlignment = Alignment.Center) {
             val ringColor = MaterialTheme.colorScheme.primary
             val trackColor = MaterialTheme.colorScheme.surfaceVariant
-            Canvas(modifier = Modifier.size(220.dp)) {
+            Canvas(modifier = Modifier.size(200.dp)) {
                 val stroke = Stroke(width = 16.dp.toPx(), cap = StrokeCap.Round)
                 val inset = 8.dp.toPx()
                 val arcSize = Size(size.width - inset * 2, size.height - inset * 2)
@@ -83,16 +81,16 @@ fun FocusScreen(viewModel: FocusTimerViewModel) {
         }
 
         if (label.isNotEmpty() && state != TimerState.Idle) {
-            Spacer(Modifier.height(12.dp))
+            Spacer(Modifier.height(8.dp))
             Text(
                 text = label,
-                fontSize = 16.sp,
+                fontSize = 15.sp,
                 fontWeight = FontWeight.Medium,
                 color = MaterialTheme.colorScheme.primary,
             )
         }
 
-        Spacer(Modifier.height(12.dp))
+        Spacer(Modifier.height(8.dp))
 
         // Phase label and cycle counter (shown when auto-cycle is active)
         if (autoCycleEnabled || (state != TimerState.Idle && cycleCount > 1)) {
@@ -100,13 +98,13 @@ fun FocusScreen(viewModel: FocusTimerViewModel) {
             val cycleLabel = "Cycle $cycleCount"
             Text(
                 text = "$cycleLabel \u2014 $phaseLabel",
-                fontSize = 14.sp,
+                fontSize = 13.sp,
                 color = if (phase == TimerPhase.Break)
                     MaterialTheme.colorScheme.secondary
                 else
                     MaterialTheme.colorScheme.primary,
             )
-            Spacer(Modifier.height(8.dp))
+            Spacer(Modifier.height(4.dp))
         }
 
         // Auto-Cycle toggle
@@ -114,7 +112,7 @@ fun FocusScreen(viewModel: FocusTimerViewModel) {
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.spacedBy(8.dp),
         ) {
-            Text("Auto-Cycle", fontSize = 14.sp)
+            Text("Auto-Cycle", fontSize = 13.sp)
             Switch(
                 checked = autoCycleEnabled,
                 onCheckedChange = { viewModel.autoCycleEnabled = it },
@@ -122,7 +120,7 @@ fun FocusScreen(viewModel: FocusTimerViewModel) {
             )
         }
 
-        Spacer(Modifier.height(20.dp))
+        Spacer(Modifier.height(12.dp))
 
         Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
             listOf(25, 15, 5).forEach { mins ->
@@ -135,7 +133,7 @@ fun FocusScreen(viewModel: FocusTimerViewModel) {
             }
         }
 
-        Spacer(Modifier.height(16.dp))
+        Spacer(Modifier.height(10.dp))
 
         OutlinedTextField(
             value = customInput,
@@ -151,7 +149,7 @@ fun FocusScreen(viewModel: FocusTimerViewModel) {
             modifier = Modifier.width(160.dp),
         )
 
-        Spacer(Modifier.height(12.dp))
+        Spacer(Modifier.height(8.dp))
 
         OutlinedTextField(
             value = labelInput,
@@ -163,10 +161,10 @@ fun FocusScreen(viewModel: FocusTimerViewModel) {
             label = { Text("What are you focusing on?") },
             enabled = state == TimerState.Idle,
             singleLine = true,
-            modifier = Modifier.width(280.dp),
+            modifier = Modifier.fillMaxWidth(),
         )
 
-        Spacer(Modifier.height(32.dp))
+        Spacer(Modifier.height(20.dp))
 
         Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
             when (state) {
