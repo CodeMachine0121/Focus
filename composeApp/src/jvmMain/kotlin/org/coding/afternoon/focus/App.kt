@@ -1,8 +1,8 @@
 package org.coding.afternoon.focus
 
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.PrimaryTabRow
 import androidx.compose.material3.Tab
-import androidx.compose.material3.TabRow
 import androidx.compose.material3.Text
 import androidx.compose.runtime.*
 import androidx.compose.foundation.layout.Column
@@ -13,7 +13,7 @@ import androidx.compose.ui.Modifier
 fun App(viewModel: FocusTimerViewModel) {
     val repository = remember { SessionRepository() }
 
-    SideEffectOnce {
+    LaunchedEffect(Unit) {
         viewModel.onSessionDismissed = { durationMinutes ->
             repository.record(durationMinutes)
         }
@@ -24,7 +24,7 @@ fun App(viewModel: FocusTimerViewModel) {
         val tabs = listOf("Timer", "History")
 
         Column(modifier = Modifier.fillMaxSize()) {
-            TabRow(selectedTabIndex = selectedTab) {
+            PrimaryTabRow(selectedTabIndex = selectedTab) {
                 tabs.forEachIndexed { index, title ->
                     Tab(
                         selected = selectedTab == index,
@@ -38,18 +38,5 @@ fun App(viewModel: FocusTimerViewModel) {
                 1 -> HistoryScreen(repository)
             }
         }
-    }
-}
-
-/**
- * Runs [block] only once per composition lifecycle (on first composition).
- * Used to wire ViewModel callbacks without repeated re-assignment on every recomposition.
- */
-@Composable
-private fun SideEffectOnce(block: () -> Unit) {
-    var ran by remember { mutableStateOf(false) }
-    if (!ran) {
-        block()
-        ran = true
     }
 }
