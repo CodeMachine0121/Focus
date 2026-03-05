@@ -21,6 +21,9 @@ fun FocusScreen(viewModel: FocusTimerViewModel) {
     val state = viewModel.timerState
     val remaining = viewModel.remainingSeconds
     val progress = viewModel.progress
+    val phase = viewModel.currentPhase
+    val cycleCount = viewModel.cycleCount
+    val autoCycleEnabled = viewModel.autoCycleEnabled
 
     val minutes = remaining / 60
     val seconds = remaining % 60
@@ -72,7 +75,37 @@ fun FocusScreen(viewModel: FocusTimerViewModel) {
             )
         }
 
-        Spacer(Modifier.height(32.dp))
+        Spacer(Modifier.height(12.dp))
+
+        // Phase label and cycle counter (shown when auto-cycle is active)
+        if (autoCycleEnabled || (state != TimerState.Idle && cycleCount > 1)) {
+            val phaseLabel = if (phase == TimerPhase.Focus) "Focus" else "Break"
+            val cycleLabel = "Cycle $cycleCount"
+            Text(
+                text = "$cycleLabel \u2014 $phaseLabel",
+                fontSize = 14.sp,
+                color = if (phase == TimerPhase.Break)
+                    MaterialTheme.colorScheme.secondary
+                else
+                    MaterialTheme.colorScheme.primary,
+            )
+            Spacer(Modifier.height(8.dp))
+        }
+
+        // Auto-Cycle toggle
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(8.dp),
+        ) {
+            Text("Auto-Cycle", fontSize = 14.sp)
+            Switch(
+                checked = autoCycleEnabled,
+                onCheckedChange = { viewModel.autoCycleEnabled = it },
+                enabled = state != TimerState.Completed,
+            )
+        }
+
+        Spacer(Modifier.height(20.dp))
 
         Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
             listOf(25, 15, 5).forEach { mins ->
