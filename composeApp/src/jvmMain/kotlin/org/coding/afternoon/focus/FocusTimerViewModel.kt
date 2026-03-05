@@ -43,7 +43,7 @@ class FocusTimerViewModel : ViewModel() {
     /** Called with the duration in minutes when the user dismisses a completed session. */
     var onSessionDismissed: ((Int) -> Unit)? = null
 
-    fun setSessionLabel(label: String) {
+    fun updateSessionLabel(label: String) {
         if (timerState != TimerState.Idle) return
         sessionLabel = label.take(60)
     }

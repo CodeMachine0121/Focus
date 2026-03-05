@@ -156,7 +156,7 @@ fun FocusScreen(viewModel: FocusTimerViewModel) {
             onValueChange = { value ->
                 val trimmed = value.take(60)
                 labelInput = trimmed
-                viewModel.setSessionLabel(trimmed)
+                viewModel.updateSessionLabel(trimmed)
             },
             label = { Text("What are you focusing on?") },
             enabled = state == TimerState.Idle,
