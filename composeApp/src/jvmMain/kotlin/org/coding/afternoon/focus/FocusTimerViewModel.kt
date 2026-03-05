@@ -28,6 +28,7 @@ class FocusTimerViewModel : ViewModel() {
 
     fun setDuration(minutes: Int) {
         if (timerState != TimerState.Idle) return
+        if (minutes <= 0) return
         val seconds = minutes * 60
         totalSeconds = seconds
         remainingSeconds = seconds

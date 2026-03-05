@@ -28,17 +28,11 @@ fun FocusScreen(viewModel: FocusTimerViewModel) {
 
     var customInput by remember { mutableStateOf("") }
 
-    if (state == TimerState.Completed) {
-        AlertDialog(
-            onDismissRequest = { viewModel.dismiss() },
-            title = { Text("Time's up!") },
-            text = { Text("Your focus session is complete.") },
-            confirmButton = {
-                TextButton(onClick = { viewModel.dismiss() }) { Text("OK") }
-            }
-        )
+    LaunchedEffect(state) {
+        if (state == TimerState.Idle) customInput = ""
     }
 
+    Box(modifier = Modifier.fillMaxSize()) {
     Column(
         modifier = Modifier.fillMaxSize().padding(32.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -128,5 +122,17 @@ fun FocusScreen(viewModel: FocusTimerViewModel) {
                 Text("Reset")
             }
         }
+    }
+
+    if (state == TimerState.Completed) {
+        AlertDialog(
+            onDismissRequest = { viewModel.dismiss() },
+            title = { Text("Time's up!") },
+            text = { Text("Your focus session is complete.") },
+            confirmButton = {
+                TextButton(onClick = { viewModel.dismiss() }) { Text("OK") }
+            }
+        )
+    }
     }
 }
