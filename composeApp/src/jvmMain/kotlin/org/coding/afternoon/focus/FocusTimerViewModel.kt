@@ -40,8 +40,8 @@ class FocusTimerViewModel : ViewModel() {
 
     private var countdownJob: Job? = null
     var onComplete: (() -> Unit)? = null
-    /** Called with the duration in minutes when the user dismisses a completed session. */
-    var onSessionDismissed: ((Int) -> Unit)? = null
+    /** Called with the duration in minutes and the session label when the user dismisses a completed session. */
+    var onSessionDismissed: ((Int, String) -> Unit)? = null
 
     fun updateSessionLabel(label: String) {
         if (timerState != TimerState.Idle) return
@@ -130,6 +130,7 @@ class FocusTimerViewModel : ViewModel() {
 
     fun dismiss() {
         val completedDuration = totalSeconds / 60
+        val completedLabel = sessionLabel
         countdownJob?.cancel()
         remainingSeconds = focusTotalSeconds
         totalSeconds = focusTotalSeconds
@@ -137,6 +138,6 @@ class FocusTimerViewModel : ViewModel() {
         timerState = TimerState.Idle
         currentPhase = TimerPhase.Focus
         cycleCount = 1
-        onSessionDismissed?.invoke(completedDuration)
+        onSessionDismissed?.invoke(completedDuration, completedLabel)
     }
 }

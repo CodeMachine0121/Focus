@@ -87,7 +87,7 @@ class SystemTrayManager(
         return menu
     }
 
-    /** Poll the ViewModel every 500 ms and update the tooltip accordingly. */
+    /** Poll the ViewModel every 500 ms and update the tooltip and icon accordingly. */
     private fun startPolling() {
         pollJob = scope.launch {
             var lastState: TimerState? = null
@@ -96,11 +96,17 @@ class SystemTrayManager(
             while (isActive) {
                 val state = viewModel.timerState
                 val remaining = viewModel.remainingSeconds
+                val phase = viewModel.currentPhase
 
                 val changed = state != lastState || remaining != lastRemaining
                 if (changed) {
                     val tooltip = buildTooltip(state, remaining)
-                    EventQueue.invokeLater { trayIcon?.toolTip = tooltip }
+                    val isActive = state == TimerState.Running || state == TimerState.Paused
+                    val newIcon = createTrayImage(isActive = isActive, phase = phase)
+                    EventQueue.invokeLater {
+                        trayIcon?.toolTip = tooltip
+                        trayIcon?.image = newIcon
+                    }
 
                     if (state == TimerState.Completed && lastState != TimerState.Completed) {
                         showCompletionNotification()
@@ -143,18 +149,32 @@ class SystemTrayManager(
     // -------------------------------------------------------------------------
 
     /**
-     * Creates a simple 16x16 filled-circle icon in a blue-ish colour.
-     * No image assets are required.
+     * Creates a 64x64 icon whose color reflects timer state:
+     *  - Idle: gray  (#787878)
+     *  - Focusing/Paused: red  (#E53935)
+     *  - Break: blue (#1E88E5)
+     *
+     * Uses a donut (ring) shape so the macOS menu bar shows it clearly.
      */
-    private fun createTrayImage(): Image {
+    private fun createTrayImage(isActive: Boolean = false, phase: TimerPhase = TimerPhase.Focus): Image {
         val size = 64
         val img = BufferedImage(size, size, BufferedImage.TYPE_INT_ARGB)
         val g = img.createGraphics()
         g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON)
-        g.color = Color(0x5C6BC0) // indigo-400
+
+        // Outer filled circle — color encodes state
+        g.color = when {
+            !isActive -> Color(0x78, 0x78, 0x78)          // gray — idle
+            phase == TimerPhase.Break -> Color(0x1E, 0x88, 0xE5) // blue — break
+            else -> Color(0xE5, 0x39, 0x35)                // red — focusing
+        }
         g.fillOval(4, 4, size - 8, size - 8)
-        g.color = Color.WHITE
-        g.fillOval(size / 2 - 4, size / 2 - 4, 8, 8)
+
+        // White inner circle (donut / ring effect)
+        g.color = Color(255, 255, 255, 200)
+        val innerInset = size / 4
+        g.fillOval(innerInset, innerInset, size - innerInset * 2, size - innerInset * 2)
+
         g.dispose()
         return img
     }
