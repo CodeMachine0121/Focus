@@ -22,6 +22,7 @@ private val navItems = listOf(
     NavItem("📊", "Stats"),
     NavItem("🧘", "Break"),
     NavItem("💼", "Work"),
+    NavItem("🏆", "Achievements"),
     NavItem("📅", "Schedule"),
 )
 
@@ -31,8 +32,8 @@ fun App(viewModel: FocusTimerViewModel) {
     val goalRepository = remember { GoalRepository() }
 
     LaunchedEffect(Unit) {
-        viewModel.onSessionDismissed = { durationMinutes ->
-            repository.record(durationMinutes)
+        viewModel.onSessionDismissed = { durationMinutes, label ->
+            repository.record(durationMinutes, label)
         }
     }
 
@@ -44,6 +45,8 @@ fun App(viewModel: FocusTimerViewModel) {
         val dashboardViewModel = remember { DashboardViewModel(repository) }
         val breakCoachViewModel = remember { BreakCoachViewModel(focusTimerViewModel = viewModel) }
         val workspaceViewModel = remember { WorkspaceViewModel() }
+        val achievementRepository = remember { AchievementRepository() }
+        val achievementViewModel = remember { AchievementViewModel(repository, achievementRepository) }
         val scheduleRepository = remember { ScheduleRepository() }
         val scheduleViewModel = remember { ScheduleViewModel(scheduleRepository) }
         val notificationService = remember { ScheduleNotificationService(scheduleRepository) }
@@ -72,7 +75,8 @@ fun App(viewModel: FocusTimerViewModel) {
                     }
                     5 -> BreakCoachScreen(breakCoachViewModel)
                     6 -> WorkspaceScreen(workspaceViewModel)
-                    7 -> ScheduleScreen(scheduleViewModel)
+                    7 -> AchievementScreen(achievementViewModel)
+                    8 -> ScheduleScreen(scheduleViewModel)
                 }
             }
         }

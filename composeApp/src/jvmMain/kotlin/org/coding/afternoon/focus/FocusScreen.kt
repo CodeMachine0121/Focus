@@ -41,12 +41,22 @@ fun FocusScreen(viewModel: FocusTimerViewModel) {
     }
 
     Box(modifier = Modifier.fillMaxSize()) {
+    Surface(
+        modifier = Modifier.fillMaxSize(),
+        color = MaterialTheme.colorScheme.background,
+    ) {
     Column(
         modifier = Modifier.fillMaxSize().padding(horizontal = 32.dp, vertical = 24.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center,
     ) {
-        Box(contentAlignment = Alignment.Center) {
+        Card(
+            elevation = CardDefaults.cardElevation(defaultElevation = 8.dp),
+            shape = MaterialTheme.shapes.extraLarge,
+            colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
+            modifier = Modifier.padding(bottom = 8.dp),
+        ) {
+        Box(contentAlignment = Alignment.Center, modifier = Modifier.padding(16.dp)) {
             val ringColor = MaterialTheme.colorScheme.primary
             val trackColor = MaterialTheme.colorScheme.surfaceVariant
             Canvas(modifier = Modifier.size(200.dp)) {
@@ -77,8 +87,10 @@ fun FocusScreen(viewModel: FocusTimerViewModel) {
                 text = timeText,
                 fontSize = 48.sp,
                 fontWeight = FontWeight.Bold,
+                style = MaterialTheme.typography.displayMedium,
             )
         }
+        } // end Card
 
         if (label.isNotEmpty() && state != TimerState.Idle) {
             Spacer(Modifier.height(8.dp))
@@ -94,15 +106,26 @@ fun FocusScreen(viewModel: FocusTimerViewModel) {
 
         // Phase label and cycle counter (shown when auto-cycle is active)
         if (autoCycleEnabled || (state != TimerState.Idle && cycleCount > 1)) {
-            val phaseLabel = if (phase == TimerPhase.Focus) "Focus" else "Break"
+            val phaseLabel = if (phase == TimerPhase.Focus) "🎯 Focus" else "☕ Break"
             val cycleLabel = "Cycle $cycleCount"
-            Text(
-                text = "$cycleLabel \u2014 $phaseLabel",
-                fontSize = 13.sp,
-                color = if (phase == TimerPhase.Break)
-                    MaterialTheme.colorScheme.secondary
-                else
-                    MaterialTheme.colorScheme.primary,
+            SuggestionChip(
+                onClick = {},
+                label = {
+                    Text(
+                        text = "$cycleLabel — $phaseLabel",
+                        fontSize = 13.sp,
+                    )
+                },
+                colors = SuggestionChipDefaults.suggestionChipColors(
+                    containerColor = if (phase == TimerPhase.Break)
+                        MaterialTheme.colorScheme.secondaryContainer
+                    else
+                        MaterialTheme.colorScheme.primaryContainer,
+                    labelColor = if (phase == TimerPhase.Break)
+                        MaterialTheme.colorScheme.onSecondaryContainer
+                    else
+                        MaterialTheme.colorScheme.onPrimaryContainer,
+                ),
             )
             Spacer(Modifier.height(4.dp))
         }
@@ -169,13 +192,13 @@ fun FocusScreen(viewModel: FocusTimerViewModel) {
         Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
             when (state) {
                 TimerState.Idle, TimerState.Completed -> {
-                    Button(onClick = { viewModel.start() }) { Text("Start") }
+                    FilledTonalButton(onClick = { viewModel.start() }) { Text("Start") }
                 }
                 TimerState.Running -> {
-                    Button(onClick = { viewModel.pause() }) { Text("Pause") }
+                    FilledTonalButton(onClick = { viewModel.pause() }) { Text("Pause") }
                 }
                 TimerState.Paused -> {
-                    Button(onClick = { viewModel.start() }) { Text("Resume") }
+                    FilledTonalButton(onClick = { viewModel.start() }) { Text("Resume") }
                 }
             }
             OutlinedButton(
@@ -186,6 +209,7 @@ fun FocusScreen(viewModel: FocusTimerViewModel) {
             }
         }
     }
+    } // end Surface
 
     if (state == TimerState.Completed) {
         val completionMessage = if (label.isNotEmpty()) {
