@@ -24,6 +24,7 @@ private val navItems = listOf(
     NavItem("💼", "Work"),
     NavItem("🏆", "Achievements"),
     NavItem("📅", "Schedule"),
+    NavItem("📤", "Export"),
 )
 
 @Composable
@@ -51,6 +52,8 @@ fun App(viewModel: FocusTimerViewModel) {
         val scheduleViewModel = remember { ScheduleViewModel(scheduleRepository) }
         val notificationService = remember { ScheduleNotificationService(scheduleRepository) }
         LaunchedEffect(Unit) { notificationService.start() }
+        val reportGenerator = remember { ReportGenerator(repository) }
+        val exportViewModel = remember { ExportViewModel(reportGenerator) }
 
         Row(modifier = Modifier.fillMaxSize()) {
             NavigationRail {
@@ -77,6 +80,7 @@ fun App(viewModel: FocusTimerViewModel) {
                     6 -> WorkspaceScreen(workspaceViewModel)
                     7 -> AchievementScreen(achievementViewModel)
                     8 -> ScheduleScreen(scheduleViewModel)
+                    9 -> ExportScreen(exportViewModel)
                 }
             }
         }
