@@ -22,7 +22,7 @@ jobs:
       - uses: gradle/actions/setup-gradle@v3
 
       - name: Build DMG
-        run: ./gradlew :composeApp:packageDmg -Porg.gradle.java.home=$JAVA_HOME
+        run: ./gradlew :composeApp:packageDmg
 
       - uses: actions/upload-artifact@v4
         with:
@@ -42,7 +42,7 @@ jobs:
       - uses: gradle/actions/setup-gradle@v3
 
       - name: Build MSI
-        run: .\gradlew.bat :composeApp:packageMsi "-Porg.gradle.java.home=$env:JAVA_HOME"
+        run: .\gradlew.bat :composeApp:packageMsi
 
       - uses: actions/upload-artifact@v4
         with:
