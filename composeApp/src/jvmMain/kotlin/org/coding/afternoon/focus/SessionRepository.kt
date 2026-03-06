@@ -23,9 +23,9 @@ class SessionRepository {
     }
 
     /** Record a new session and persist it immediately. */
-    fun record(durationMinutes: Int) {
+    fun record(durationMinutes: Int, label: String = "") {
         if (durationMinutes <= 0) return
-        val entry = SessionRecord.now(durationMinutes)
+        val entry = SessionRecord.now(durationMinutes, label)
         sessions.add(0, entry) // prepend so most-recent is first
         saveToPrefs()
     }

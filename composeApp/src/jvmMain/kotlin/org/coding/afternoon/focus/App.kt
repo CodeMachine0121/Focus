@@ -30,8 +30,8 @@ fun App(viewModel: FocusTimerViewModel) {
     val goalRepository = remember { GoalRepository() }
 
     LaunchedEffect(Unit) {
-        viewModel.onSessionDismissed = { durationMinutes ->
-            repository.record(durationMinutes)
+        viewModel.onSessionDismissed = { durationMinutes, label ->
+            repository.record(durationMinutes, label)
         }
     }
 
