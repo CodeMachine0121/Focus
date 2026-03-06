@@ -25,6 +25,7 @@ private val navItems = listOf(
     NavItem("🏆", "Achievements"),
     NavItem("📅", "Schedule"),
     NavItem("📤", "Export"),
+    NavItem("🔕", "Deep Focus"),
 )
 
 @Composable
@@ -54,6 +55,8 @@ fun App(viewModel: FocusTimerViewModel) {
         LaunchedEffect(Unit) { notificationService.start() }
         val reportGenerator = remember { ReportGenerator(repository) }
         val exportViewModel = remember { ExportViewModel(reportGenerator) }
+        val deepFocusManager = remember { DeepFocusManager() }
+        val deepFocusViewModel = remember { DeepFocusViewModel(deepFocusManager) }
 
         Row(modifier = Modifier.fillMaxSize()) {
             NavigationRail {
@@ -81,6 +84,7 @@ fun App(viewModel: FocusTimerViewModel) {
                     7 -> AchievementScreen(achievementViewModel)
                     8 -> ScheduleScreen(scheduleViewModel)
                     9 -> ExportScreen(exportViewModel)
+                    10 -> DeepFocusScreen(deepFocusViewModel)
                 }
             }
         }
