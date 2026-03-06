@@ -26,6 +26,7 @@ private val navItems = listOf(
     NavItem("📅", "Schedule"),
     NavItem("📤", "Export"),
     NavItem("🔕", "Deep Focus"),
+    NavItem("🤝", "Peers"),
 )
 
 @Composable
@@ -57,6 +58,8 @@ fun App(viewModel: FocusTimerViewModel) {
         val exportViewModel = remember { ExportViewModel(reportGenerator) }
         val deepFocusManager = remember { DeepFocusManager() }
         val deepFocusViewModel = remember { DeepFocusViewModel(deepFocusManager) }
+        val peerNetworkService = remember { PeerNetworkService(viewModel) }
+        val peerViewModel = remember { PeerViewModel(peerNetworkService) }
 
         Row(modifier = Modifier.fillMaxSize()) {
             NavigationRail {
@@ -85,6 +88,7 @@ fun App(viewModel: FocusTimerViewModel) {
                     8 -> ScheduleScreen(scheduleViewModel)
                     9 -> ExportScreen(exportViewModel)
                     10 -> DeepFocusScreen(deepFocusViewModel)
+                    11 -> PeerScreen(peerViewModel)
                 }
             }
         }
